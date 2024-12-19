@@ -13,7 +13,7 @@ function EditEmployee(props) {
 
     return (
         <>
-            <button onClick={handleShow} classNameName="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">Update</button>
+            <button onClick={handleShow} className="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">Update</button>
 
             <Modal
                 show={show}
@@ -25,7 +25,12 @@ function EditEmployee(props) {
                     <Modal.Title>Edit Employee</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form id='editmodal' className="w-full max-w-sm">
+                    <form 
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            props.updateEmployee(props.id,name,role);                            
+                        }}
+                        id='editmodal' className="w-full max-w-sm">
                         <div className="md:flex md:items-center mb-6">
                             <div className="md:w-1/3">
                                 <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="name">
@@ -62,7 +67,7 @@ function EditEmployee(props) {
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-gray-500 py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleClose}>
+                    <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-gray-500 py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleClose}>
                         Close
                     </button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" form="editmodal">Update</button>
