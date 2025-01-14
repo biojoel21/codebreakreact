@@ -3,16 +3,19 @@ import Employees from './pages/Employees';
 import Header from './components/Header';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-function App() { 
+function App() {
+
   return (
+
+    <BrowserRouter>
       <Header>
-          <BrowserRouter>
-              <Routes>
-                  <Route path="/employees" element={<Employees />} />
-              </Routes>
-          </BrowserRouter>
+        <Routes>
+          <Route path="/employees" element={<Employees />} />
+        </Routes>
       </Header>
-    );
+    </BrowserRouter>
+  );
+
 }
 
 export default App;
