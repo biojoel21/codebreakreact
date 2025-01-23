@@ -1,31 +1,33 @@
 import {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
+
 export default function Dictionary(){
     const [word, setWord] = useState();
-    const [word2, setWord2] = useState();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log('word is', word);
-    },[word]);
+    // no dependency array --> update for any state change
+    // useEffect(() => {
+    //     console.log('State Updated', word, + ' ' + word2);
+    // });
 
-    useEffect(() => {
-        console.log('word is', word2);
-    },[word2]);
+    // empty dependency array --> update only once
+    // useEffect(() => {
+    //     console.log('State Updated', word, + ' ' + word2);
+    // },[]);
 
-    //no dependency array --> update for any state change
-    //empty array --> update only once
-    //passing in data --> only execute when those state variables are changed
+    // dependency array with values --> update only when those values change
+    // useEffect(() => {
+    //     console.log('State Updated', word, + ' ' + word2);
+    // },[word]);
 
     return (
         <>
             <input type="text" onChange={(e) => {
                 setWord(e.target.value);
             }} />   
-            <h1>lets go {word}</h1>
-
-            <input type="text" onChange={(e) => {
-                setWord2(e.target.value);
-            }} />   
-            <h2>lets go {word2}</h2>
+            <button onClick={() => {
+                navigate('/definition/' + word, {replace: true});
+            }}>Search</button>
         </>
     )
 }
