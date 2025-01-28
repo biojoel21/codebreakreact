@@ -9,18 +9,35 @@ export default function Definition() {
     console.log(useParams());
     let { search } = useParams();
     const navigate = useNavigate();
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        fetch('https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search)
+        const url = 'https://httpstat.us/500';
+        //const url = 'https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search;
+
+        fetch(url)
         .then(response => {    
+            //console.log(response.status);
             if(response.status === 404){
                 setNotFound(true);  
-            }             
+            } else if (response.status === 401){
+                navigate('/login')
+            }
+            else if (response.status === 500){
+                setError(true)
+            }
+
+            if(!response.ok){
+                setError(true);
+                throw new Error('An error occurred');
+            }
             return response.json()
         })
         .then((data) => {
-            setWord(data[0].meanings);
-            console.log(data[0].meanings);                           
+            setWord(data[0].meanings);                        
+        })
+        .catch((e) => {
+            console.log(e.message);
         });
     }, []);   
 
@@ -32,6 +49,16 @@ export default function Definition() {
             </>
         );
     }
+
+    if(error === true){  
+        return (
+            <>
+                <p>Something went wrong</p>
+                <Link to="/dictionary">Go back to the dictionary</Link>
+            </>
+        );
+    }
+
     return (
     <>        
         {word ? (
