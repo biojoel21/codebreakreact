@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {v4 as uuidv4} from 'uuid';
 import { useParams, useNavigate, Link } from "react-router-dom";
 import NotFound from "../components/NotFound";
+import DefinitionSearch from "../components/DefinitionSearch";
 
 export default function Definition() {
     const [word, setWord] = useState([]);
@@ -12,8 +13,8 @@ export default function Definition() {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        const url = 'https://httpstat.us/500';
-        //const url = 'https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search;
+        //const url = 'https://httpstat.us/500';
+        const url = 'https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search;
 
         fetch(url)
         .then(response => {    
@@ -45,7 +46,9 @@ export default function Definition() {
         return (
             <>
                 <NotFound/>
-                <Link to="/dictionary">Go back to the dictionary</Link>
+                <hr/>
+                <p>Search again:</p>
+                <DefinitionSearch/>
             </>
         );
     }
@@ -54,7 +57,9 @@ export default function Definition() {
         return (
             <>
                 <p>Something went wrong</p>
-                <Link to="/dictionary">Go back to the dictionary</Link>
+                <hr/>
+                <p>Search again:</p>
+                <DefinitionSearch/>
             </>
         );
     }
@@ -72,6 +77,9 @@ export default function Definition() {
                     </p>
                 );
             })}
+            <hr/>
+            <p>Search again:</p>
+            <DefinitionSearch/>
             </>
         ) : null}
     </>
