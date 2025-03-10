@@ -5,6 +5,12 @@ import AddCustomer from '../components/AddCustomer';
 
 export default function Customers() {
     const [customers, setCustomers] = useState();
+    const [show, setShow] = useState(false);
+
+    function toogleShow() {
+        setShow(!show);
+    }
+
     useEffect(() => {
         const url = baseUrl + 'api/customers';
         fetch(url)
@@ -29,6 +35,8 @@ export default function Customers() {
             return response.json();
         }).then((data) => {
             //
+            toogleShow();
+            setCustomers([...customers, data.customer]);
         }).catch((e) => {
             console.log(e);
         });
@@ -45,7 +53,7 @@ export default function Customers() {
                     );
                 }) : null}
             </ul>
-            <AddCustomer newCustomer={newCustomer} />
+            <AddCustomer newCustomer={newCustomer} show={show} toogleShow={toogleShow} />
         </>
     );
 }

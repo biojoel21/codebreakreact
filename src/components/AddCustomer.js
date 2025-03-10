@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 export default function AddCustomer(props) {
     const [name, setName] = useState('');
     const [industry, setIndustry] = useState('');    
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(props.show);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -12,12 +12,12 @@ export default function AddCustomer(props) {
     return (
         <>
             <button 
-                onClick={handleShow} 
+                onClick={props.toogleShow} 
                 className="block mx-auto m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 + Add Customer</button>
 
             <Modal
-                show={show}
+                show={props.show}
                 onHide={handleClose}
                 backdrop="static"
                 keyboard={false}
@@ -72,11 +72,11 @@ export default function AddCustomer(props) {
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-gray-500 py-2 px-4 border border-blue-500 hover:border-transparent rounded" onClick={handleClose}>
+                    <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-gray-500 py-2 px-4 border border-blue-500 hover:border-transparent rounded" 
+                    onClick={props.toogleShow}>
                         Close
                     </button>
-                    <button 
-                        onClick={handleClose}
+                    <button                         
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
                         form="editmodal">Add</button>
                 </Modal.Footer>
