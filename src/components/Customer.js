@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import NotFound from '../components/NotFound';
 import { baseUrl } from '../shared';
 
@@ -10,6 +10,18 @@ export default function Customer() {
     const [tempCustomer, setTempCustomer] = useState();
     const [notFound, setNotFound] = useState();
     const [changed, setChanged] = useState(false);
+
+    useEffect(() => {
+        if(!customer) return;
+        if(!tempCustomer) return;
+
+        if(tempCustomer.name === customer.name 
+            && tempCustomer.industry === customer.industry){
+                setChanged(false);
+            } else {
+                setChanged(true);
+            }
+    });
 
     useEffect(() => {        
         const url = baseUrl + 'api/customers/' + id;
@@ -59,21 +71,26 @@ export default function Customer() {
                     <input class="m-2 block px-2" type="text" value={tempCustomer.name}
                     onChange={(e) => {
                         setChanged(true);
-                        setTempCustomer({...tempCustomer, name: e.target.value});
+                        setTempCustomer({...tempCustomer, name: e.target.value});                  
                     }}/>            
                     <input class="m-2 block px-2" type="text" value={tempCustomer.industry}
                      onChange={(e) => {
                         setChanged(true);
-                        setTempCustomer({...tempCustomer, industry: e.target.value});
+                        setTempCustomer({...tempCustomer, industry: e.target.value});             
                     }}/>    
-                    {changed ? (
-                    <>
-                    <button onClick={(e) => { 
-                        setTempCustomer({...customer});
-                        setChanged(false);
-                    }}>Cancel
-                    </button> 
-                    <button onClick={updateCustomer}>Save</button></>): null}       
+                    {changed ? 
+                        (
+                            <>
+                                <button 
+                                    className='m-2'
+                                    onClick={(e) => { 
+                                        setTempCustomer({...customer});
+                                        setChanged(false);}}>Cancel</button> 
+                                <button 
+                                    className='m-2'
+                                    onClick={updateCustomer}>Save</button>
+                            </>
+                        ): null}       
                 </div>
             ) : null }
             <button onClick={(e) => {
