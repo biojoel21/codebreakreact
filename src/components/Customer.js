@@ -50,7 +50,8 @@ export default function Customer() {
         });
     },[]);
 
-    function updateCustomer(){
+    function updateCustomer(e){
+        e.preventDefault();
         const url = baseUrl + 'api/customers/' + id;
         fetch(url, { 
             method: 'POST',
@@ -76,60 +77,87 @@ export default function Customer() {
     }
 
     return (
-         <>
+         <div className="p-3">
             {notFound ? <NotFound /> : null}
             {customer ? (
                 <div>
-                    <p className="m-2 block px-2">{tempCustomer.id} </p>            
-                    <input className="m-2 block px-2" type="text" value={tempCustomer.name}
-                    onChange={(e) => {
-                        setChanged(true);
-                        setTempCustomer({...tempCustomer, name: e.target.value});                  
-                    }}/>            
-                    <input className="m-2 block px-2" type="text" value={tempCustomer.industry}
-                     onChange={(e) => {
-                        setChanged(true);
-                        setTempCustomer({...tempCustomer, industry: e.target.value});             
-                    }}/>    
-                    {changed ? 
-                        (
-                            <>
-                                <button 
-                                    className='m-2'
-                                    onClick={(e) => { 
-                                        setTempCustomer({...customer});
-                                        setChanged(false);}}>Cancel</button> 
-                                <button 
-                                    className='m-2'
-                                    onClick={updateCustomer}>Save</button>
-                            </>
-                        ): null}      
-            
-                    <button onClick={(e) => {
-                        const url = baseUrl + 'api/customers/' + id;
-                        fetch(url, { 
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                        .then((response) => {
-                            if(!response.ok) {
-                                throw new Error('Something went wrong');
-                            }
-                            navigate('/customers');
-                        })
-                        .catch((e) => {
-                            setError(e.message);
-                        });
-                    }}>Delete</button>                    
+                    <form className="w-full max-w-sm" id="customer" onSubmit={updateCustomer}>
+                        <div className="md:flex md:items-center mb-6">
+                            <div className="md:w-1/4">
+                                <label for="name">Name</label>
+                            </div>
+                            <div className="md:w-3/4">
+                                <input id="name" 
+                                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                                type="text" value={tempCustomer.name}
+                                onChange={(e) => {
+                                    setChanged(true);
+                                    setTempCustomer({...tempCustomer, name: e.target.value});                  
+                                }}/>            
+                            </div>
+                        </div>
+                        <div className="md:flex md:items-center mb-6">
+                            <div className="md:w-1/4">
+                                <label for="industry">Industry</label>    
+                            </div>
+                            <div className="md:w-3/4">
+                                <input id="industry" 
+                                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                                type="text" value={tempCustomer.industry}
+                                onChange={(e) => {
+                                    setChanged(true);
+                                    setTempCustomer({...tempCustomer, industry: e.target.value});             
+                                }}/>  
+                            </div>
+                        </div>
+                    </form>  
+                    {changed ? (
+                            <div className='mb-2'>
+                                <button
+                                    className="bg-transparent hover:bg-purple-500 text-purple-700 font-semibold hover:text-gray-500 py-2 px-4 border border-purple-500 hover:border-transparent mr-2 rounded"
+                                    onClick={(e) => {
+                                        setTempCustomer({ ...customer });
+                                        setChanged(false);
+                                    }}>Cancel</button>
+                                <button
+                                    className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+                                    form="customer"
+                                >Save</button>
+                            </div>
+                        ) : null}     
+                    <div>
+                        <button
+                            className="bg-slate-800 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-gray-500 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                            onClick={(e) => {
+                            const url = baseUrl + 'api/customers/' + id;
+                            fetch(url, { 
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then((response) => {
+                                if(!response.ok) {
+                                    throw new Error('Something went wrong');
+                                }
+                                navigate('/customers');
+                            })
+                            .catch((e) => {
+                                setError(e.message);
+                            });
+                        }}>Delete</button>                    
+                    </div>                    
                 </div>
             ) 
             :             
             null }
             {error ? <p>{error}</p> : null}
             <br/>
-            <Link to="/customers">Go back</Link>  
-        </>
+            <Link to="/customers">
+                <button className="no-underline bg-slate-800 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-gray-500 py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                    ← Go back
+                </button>
+            </Link>  
+        </div>
     );    
 }
