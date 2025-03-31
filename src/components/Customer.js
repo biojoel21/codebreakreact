@@ -10,6 +10,7 @@ export default function Customer() {
     const [tempCustomer, setTempCustomer] = useState();
     const [notFound, setNotFound] = useState();
     const [changed, setChanged] = useState(false);
+    const [error, setError] = useState();
 
     useEffect(() => {
         if(!customer) return;
@@ -33,12 +34,20 @@ export default function Customer() {
                 //navigate('/404');
                 setNotFound(true);
             }
+
+            if(!response.ok) throw new Error('Something went wrong');
+
             return response.json();
         })
         .then((data) => {
             setCustomer(data.customer);
             setTempCustomer(data.customer);
-        });  
+            setError(undefined);
+        })
+        .catch((e) => {
+            console.log(e);
+            setError(e.message);
+        });
     },[]);
 
     function updateCustomer(){
@@ -51,14 +60,18 @@ export default function Customer() {
             body: JSON.stringify(tempCustomer),
         })
         .then((response) => {
+            if(!response.ok) throw new Error('Something went wrong');
             return response.json();
         })
         .then((data) => {
             setCustomer(data.customer);
             setChanged(false);
+            console.log(data);
+            setError(undefined);
         })
         .catch((e) => {
             console.log(e);
+            setError(e);
         });
     }
 
@@ -67,13 +80,13 @@ export default function Customer() {
             {notFound ? <NotFound /> : null}
             {customer ? (
                 <div>
-                    <p class="m-2 block px-2">{tempCustomer.id} </p>            
-                    <input class="m-2 block px-2" type="text" value={tempCustomer.name}
+                    <p className="m-2 block px-2">{tempCustomer.id} </p>            
+                    <input className="m-2 block px-2" type="text" value={tempCustomer.name}
                     onChange={(e) => {
                         setChanged(true);
                         setTempCustomer({...tempCustomer, name: e.target.value});                  
                     }}/>            
-                    <input class="m-2 block px-2" type="text" value={tempCustomer.industry}
+                    <input className="m-2 block px-2" type="text" value={tempCustomer.industry}
                      onChange={(e) => {
                         setChanged(true);
                         setTempCustomer({...tempCustomer, industry: e.target.value});             
@@ -90,27 +103,31 @@ export default function Customer() {
                                     className='m-2'
                                     onClick={updateCustomer}>Save</button>
                             </>
-                        ): null}       
+                        ): null}      
+            
+                    <button onClick={(e) => {
+                        const url = baseUrl + 'api/customers/' + id;
+                        fetch(url, { 
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then((response) => {
+                            if(!response.ok) {
+                                throw new Error('Something went wrong');
+                            }
+                            navigate('/customers');
+                        })
+                        .catch((e) => {
+                            setError(e.message);
+                        });
+                    }}>Delete</button>                    
                 </div>
-            ) : null }
-            <button onClick={(e) => {
-                const url = baseUrl + 'api/customers/' + id;
-                fetch(url, { 
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then((response) => {
-                    if(!response.ok) {
-                        throw new Error('Something went wrong');
-                    }
-                    navigate('/customers');
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-            }}>Delete</button>
+            ) 
+            :             
+            null }
+            {error ? <p>{error}</p> : null}
             <br/>
             <Link to="/customers">Go back</Link>  
         </>
