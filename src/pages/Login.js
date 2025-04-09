@@ -17,6 +17,8 @@ export default function Login() {
         }).then((response) => { 
             return response.json();
         }).then((data) => {
+            localStorage.setItem('access', data.access);
+            localStorage.setItem('refresh', data.refresh);
             console.log(data);
         })
     }

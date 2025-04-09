@@ -26,7 +26,12 @@ export default function Customer() {
 
     useEffect(() => {        
         const url = baseUrl + 'api/customers/' + id;
-        fetch(url)
+        fetch(url, {
+            headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('access')
+                }
+            })
         .then((response) => {
             if(response.status === 404) {
                 // redirect to 404 page
@@ -59,11 +64,16 @@ export default function Customer() {
         fetch(url, { 
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem('access')
             },
             body: JSON.stringify(tempCustomer),
         })
         .then((response) => {
+            if(response.status === 401) {
+                // redirect to login page
+                navigate('/login');
+            }
             if(!response.ok) throw new Error('Something went wrong');
             return response.json();
         })
@@ -136,10 +146,15 @@ export default function Customer() {
                             fetch(url, { 
                                 method: 'DELETE',
                                 headers: {
-                                    'Content-Type': 'application/json'
+                                    'Content-Type': 'application/json',
+                                    Authorization: 'Bearer ' + localStorage.getItem('access')
                                 }
                             })
                             .then((response) => {
+                                if(response.status === 401) {
+                                    // redirect to login page
+                                    navigate('/login');
+                                }
                                 if(!response.ok) {
                                     throw new Error('Something went wrong');
                                 }
