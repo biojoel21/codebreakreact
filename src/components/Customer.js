@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { use, useEffect, useState } from 'react';
 import NotFound from '../components/NotFound';
 import { baseUrl } from '../shared';
@@ -11,6 +11,7 @@ export default function Customer() {
     const [notFound, setNotFound] = useState();
     const [changed, setChanged] = useState(false);
     const [error, setError] = useState();
+    const location = useLocation();
 
     useEffect(() => {
         if(!customer) return;
@@ -40,7 +41,11 @@ export default function Customer() {
                 setNotFound(true);
             } else if(response.status === 401) {
                 // redirect to login page
-                navigate('/login');
+                navigate('/login', {
+                    state: { 
+                        previousUrl: location.pathname 
+                    }
+                })
             }
 
             if(!response.ok) throw new Error('Something went wrong');
@@ -72,7 +77,11 @@ export default function Customer() {
         .then((response) => {
             if(response.status === 401) {
                 // redirect to login page
-                navigate('/login');
+                navigate('/login', {
+                    state: { 
+                        previousUrl: location.pathname 
+                    }
+                })
             }
             if(!response.ok) throw new Error('Something went wrong');
             return response.json();
@@ -153,7 +162,11 @@ export default function Customer() {
                             .then((response) => {
                                 if(response.status === 401) {
                                     // redirect to login page
-                                    navigate('/login');
+                                    navigate('/login', {
+                                        state: { 
+                                            previousUrl: location.pathname 
+                                        }
+                                    })
                                 }
                                 if(!response.ok) {
                                     throw new Error('Something went wrong');
