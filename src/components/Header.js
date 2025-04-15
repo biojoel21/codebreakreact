@@ -1,12 +1,13 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { NavLink } from 'react-router-dom'
+import { useContext } from 'react';
+import { LoginContext } from '../App';
 
 const navigation = [
   { name: 'Dashboard', href: '/employees' },
   { name: 'Dictionary', href: '/dictionary' },
-  { name: 'Customers', href: '/customers'},
-  { name: 'Calendar', href: '' },
+  { name: 'Customers', href: '/customers'},  
 ]
 
 function classNames(...classes) {
@@ -14,6 +15,7 @@ function classNames(...classes) {
 }
 
 export default function Header(props) {
+  const [loggedIn,setLoggedIn] = useContext(LoginContext);
   return (
     <>
     <Disclosure as="nav" className="bg-gray-800">
@@ -43,8 +45,8 @@ export default function Header(props) {
                     key={item.name}
                     to={item.href}
                     className={({ isActive }) => {
-                       return ('px-3 px-2 rounded-md text-sm font-medium no-underline' +
-                          (isActive ? ' text-gray-300 bg-gray-700 text-white no-underline' 
+                       return ('px-3 rounded-md text-sm font-medium no-underline' +
+                          (isActive ? ' bg-gray-700 text-white no-underline' 
                                      : 'bg-gray-900 text-white no-underline')
                           );
                     }}                   
@@ -52,6 +54,12 @@ export default function Header(props) {
                     {item.name}
                   </NavLink>
                 ))}
+                <NavLink                    
+                    to={loggedIn ? '/logout/' : '/login/'}
+                    className='px-3 rounded-md text-sm font-medium text-gray-300 bg-gray-700 no-underline'
+                  >
+                  {loggedIn ? 'Logout' : 'Login'}
+                </NavLink>
               </div>
             </div>
           </div>
@@ -76,7 +84,7 @@ export default function Header(props) {
               to={item.href}
               className={({ isActive }) => {
                 return ('block rounded-md px-3 py-2 text-base font-medium no-underline' +
-                    (!isActive ? ' text-gray-300 bg-gray-700 text-white no-underline' 
+                    (!isActive ? ' bg-gray-700 text-white no-underline' 
                               : 'bg-gray-900 text-white no-underline')
                     );
               }}                   
@@ -84,6 +92,12 @@ export default function Header(props) {
               {item.name}
             </NavLink>            
           ))}
+          <NavLink                    
+              to={loggedIn ? '/logout/' : '/login/'}
+              className='block rounded-md px-3 py-2 text-base font-medium bg-gray-700 text-white no-underline'
+            >
+            {loggedIn ? 'Logout' : 'Login'}
+          </NavLink>
         </div>
       </DisclosurePanel>      
     </Disclosure>    

@@ -1,9 +1,12 @@
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import NotFound from '../components/NotFound';
 import { baseUrl } from '../shared';
+import { LoginContext } from '../App';
+import { useContext } from 'react';
 
 export default function Customer() {
+    const [loggedIn, setLoggedIn] = useContext(LoginContext);
     const { id } = useParams();
     const navigate = useNavigate();
     const [customer, setCustomer] = useState();
@@ -14,16 +17,18 @@ export default function Customer() {
     const location = useLocation();
 
     useEffect(() => {
-        if(!customer) return;
-        if(!tempCustomer) return;
+        if (!customer) return;
+        if (!tempCustomer) return;
 
-        if(tempCustomer.name === customer.name 
-            && tempCustomer.industry === customer.industry){
-                setChanged(false);
-            } else {
-                setChanged(true);
-            }
-    });
+        if (
+            tempCustomer.name === customer.name &&
+            tempCustomer.industry === customer.industry
+        ) {
+            setChanged(false);
+        } else {
+            setChanged(true);
+        }
+    }, [customer, tempCustomer]); // Add dependencies here
 
     useEffect(() => {        
         const url = baseUrl + 'api/customers/' + id;
@@ -40,6 +45,7 @@ export default function Customer() {
                 //navigate('/404');
                 setNotFound(true);
             } else if(response.status === 401) {
+                setLoggedIn(false);
                 // redirect to login page
                 navigate('/login', {
                     state: { 
@@ -61,7 +67,7 @@ export default function Customer() {
             console.log(e);
             setError(e.message);
         });
-    },[]);
+    },[id, location, navigate]);
 
     function updateCustomer(e){
         e.preventDefault();
@@ -76,6 +82,7 @@ export default function Customer() {
         })
         .then((response) => {
             if(response.status === 401) {
+                setLoggedIn(false);
                 // redirect to login page
                 navigate('/login', {
                     state: { 
@@ -161,6 +168,7 @@ export default function Customer() {
                             })
                             .then((response) => {
                                 if(response.status === 401) {
+                                    setLoggedIn(false);
                                     // redirect to login page
                                     navigate('/login', {
                                         state: { 
