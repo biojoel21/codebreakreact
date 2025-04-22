@@ -20,7 +20,7 @@ export default function Header(props) {
     <>
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between h-14">
+        <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button*/}
             <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -54,12 +54,26 @@ export default function Header(props) {
                     {item.name}
                   </NavLink>
                 ))}
-                <NavLink                    
-                    to={loggedIn ? '/logout/' : '/login/'}
-                    className='px-3 rounded-md text-sm font-medium text-gray-300 bg-gray-700 no-underline'
-                  >
-                  {loggedIn ? 'Logout' : 'Login'}
-                </NavLink>
+
+                {loggedIn ?
+                  <NavLink                    
+                      to='/login'
+                      onClick={() => {
+                        localStorage.clear();
+                        setLoggedIn(false);
+                      }}
+                      className='px-3 rounded-md text-sm font-medium text-gray-300 bg-gray-700 no-underline'
+                    >
+                    Logout
+                  </NavLink>
+                  :
+                  <NavLink                    
+                      to={'/login'}
+                      className='px-3 rounded-md text-sm font-medium text-gray-300 bg-gray-700 no-underline'
+                    >
+                    Login
+                  </NavLink>
+                }
               </div>
             </div>
           </div>
@@ -92,12 +106,25 @@ export default function Header(props) {
               {item.name}
             </NavLink>            
           ))}
-          <NavLink                    
-              to={loggedIn ? '/logout/' : '/login/'}
-              className='block rounded-md px-3 py-2 text-base font-medium bg-gray-700 text-white no-underline'
-            >
-            {loggedIn ? 'Logout' : 'Login'}
-          </NavLink>
+          {loggedIn ?
+                  <NavLink                    
+                      to='/login'
+                      onClick={() => {
+                        localStorage.clear();
+                        setLoggedIn(false);
+                      }}
+                      className='block rounded-md px-3 py-2 text-base font-medium bg-gray-700 text-white no-underline'
+                    >
+                    Logout
+                  </NavLink>
+                  :
+                  <NavLink                    
+                      to={'/login'}
+                      className='block rounded-md px-3 py-2 text-base font-medium bg-gray-700 text-white no-underline'
+                    >
+                    Login
+                  </NavLink>
+                }
         </div>
       </DisclosurePanel>      
     </Disclosure>    
