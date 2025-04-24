@@ -10,6 +10,7 @@ import Customers from './pages/Customers';
 import Customer from './components/Customer';
 import Login from './pages/Login';
 import { baseUrl } from './shared';
+import Register from './pages/Register';
 
 export const LoginContext = createContext();  
 
@@ -62,6 +63,7 @@ function App() {
             <Route path="/dictionary/:search" element={<Definition/>} />
             <Route path="/customers/" element={<Customers/>} />
             <Route path="/customers/:id" element={<Customer/>} />
+            <Route path="/register" element={<Register/>} />       
             <Route path="/404" element={<NotFound/>} />       
             <Route path="*" element={<NotFound/>} />   
           </Routes>
