@@ -3,10 +3,11 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { baseUrl } from '../shared';
 import AddCustomer from '../components/AddCustomer';
 import { LoginContext } from '../App';
+import useFetch from '../hooks/UseFetch';
 
 export default function Customers() {
     const [loggedIn, setLoggedIn] = useContext(LoginContext);
-    const [customers, setCustomers] = useState();
+    //const [customers, setCustomers] = useState();
     const [show, setShow] = useState(false);
 
     function toogleShow() {
@@ -16,59 +17,73 @@ export default function Customers() {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const url = baseUrl + 'api/customers';
+    const { data: {customers} = {}, errorStatus } = useFetch(url, {method: 'GET', 
+    headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('access')
+    }},);
+
     useEffect(() => {
-        const url = baseUrl + 'api/customers';
-        fetch(url, {
-            headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + localStorage.getItem('access')
-                }
-            })
-            .then((response) => {
-                if(response.status === 401){ 
-                    setLoggedIn(false);
-                    navigate('/login', {
-                        state: { 
-                            previousUrl: location.pathname 
-                        }
-                    })
-                }
-                return response.json()
-            })
-            .then((data) => {
-                setCustomers(data.customers);
-            });
-    }, []);
+        console.log(customers, errorStatus);
+    })
+
+    // useEffect(() => {
+    //     const url = baseUrl + 'api/customers';
+    //     fetch(url, {
+    //         headers: {
+    //                 'Content-Type': 'application/json',
+    //                 Authorization: 'Bearer ' + localStorage.getItem('access')
+    //             }
+    //         })
+    //         .then((response) => {
+    //             if(response.status === 401){ 
+    //                 setLoggedIn(false);
+    //                 navigate('/login', {
+    //                     state: { 
+    //                         previousUrl: location.pathname 
+    //                     }
+    //                 })
+    //             }
+    //             return response.json()
+    //         })
+    //         .then((data) => {
+    //             setCustomers(data.customers);
+    //         });
+    // }, []);
+
+   
     function newCustomer(name, industry){
-        const data = {name: name, industry: industry};
-        const url = baseUrl + 'api/customers';
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('access')
-            },
-            body: JSON.stringify(data)
-        }).then((response) => {
-            if(response.status === 401){ 
-                navigate('/login', {
-                    state: { 
-                        previousUrl: location.pathname 
-                    }
-                })
-            }
-            if(!response.ok) {
-                throw new Error('Something went wrong');
-            }
-            return response.json();
-        }).then((data) => {
-            //
-            toogleShow();
-            setCustomers([...customers, data.customer]);
-        }).catch((e) => {
-            console.log(e);
-        });
+    //     const data = {name: name, industry: industry};
+    //     const url = baseUrl + 'api/customers';
+    //     fetch(url, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             Authorization: 'Bearer ' + localStorage.getItem('access')
+    //         },
+    //         body: JSON.stringify(data)
+    //     }).then((response) => {
+    //         if(response.status === 401){ 
+    //             navigate('/login', {
+    //                 state: { 
+    //                     previousUrl: location.pathname 
+    //                 }
+    //             })
+    //         }
+    //         if(!response.ok) {
+    //             throw new Error('Something went wrong');
+    //         }
+    //         return response.json();
+    //     }).then((data) => {
+    //         //
+    //         toogleShow();
+    //         setCustomers([...customers, data.customer]);
+    //     }).catch((e) => {
+    //         console.log(e);
+    //     });
     }
+
     return (
         <>
             <h1>Here are our customers:</h1>
