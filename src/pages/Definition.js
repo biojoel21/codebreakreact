@@ -13,7 +13,7 @@ export default function Definition() {
     let { search } = useParams();
     const navigate = useNavigate();    
     const location = useLocation();
-    const [word, errorStatus] = useFetch('https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search); 
+    const { data: [{ meanings: word}] =[{}], errorStatus} = useFetch('https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search); 
 
     if(errorStatus === 404){  
         return (
@@ -39,10 +39,10 @@ export default function Definition() {
 
     return (
     <>        
-        {word?.[0]?.meanings ? (
+        {word ? (
             <>
             <h1>Here is a definition:</h1>
-            {word[0].meanings.map((meaning) => {
+            {word.map((meaning) => {
                 return (
                     <p key={uuidv4()}>
                         {meaning.partOfSpeech + ': '} 
