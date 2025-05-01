@@ -13,7 +13,11 @@ export default function Definition() {
     let { search } = useParams();
     const navigate = useNavigate();    
     const location = useLocation();
-    const { data: [{ meanings: word}] =[{}], errorStatus} = useFetch('https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search); 
+    const { request, data: [{ meanings: word}] =[{}], errorStatus} = useFetch('https://api.dictionaryapi.dev/api/v2/entries/en_US/' + search); 
+
+    useEffect(() => {
+        request();
+    })
 
     if(errorStatus === 404){  
         return (

@@ -1,38 +1,71 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function useFetch(url, { method, headers, body } = {} ){
+export default function useFetch(url, { method, headers, body } = {}) {
     const [data, setData] = useState();
     const [errorStatus, setErrorStatus] = useState();
 
     const Navigate = useNavigate();
     const location = useLocation();
 
-    useEffect(() => {
+    function request() {
         fetch(url, {
             method: method,
             headers: headers,
             body: body
         })
-        .then((response) => {
-            if(response.status === 401){
+            .then((response) => {
+                if (response.status === 401) {
+                    Navigate('/login', {
+                        state: {
+                            previousUrl: location.pathname
+                        }
+                    });
+                }
+                if (!response.ok) {
+                    throw response.status;
+                }
+                return response.json();
+            })
+            .then((data => {
+                setData(data);
+            }))
+            .catch((e) => {
+                setErrorStatus(e);
+            });
+    }
+
+    function appendData(newData) {
+        // fetch
+        fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(newData)
+        }).then((response) => {
+            if(response.status ===401){
                 Navigate('/login', {
-                    state: { 
-                        previousUrl: location.pathname 
+                    state: {
+                        previousUrl: location.pathname
                     }
                 });
             }
-            if(!response.ok){
+            if (!response.ok) {
                 throw response.status;
             }
-            return response.json();          
+
+            return response.json();
         })
-        .then((data => {
-            setData(data);
-        }))
+        .then((d) => {
+            const submitted = Object.values(d)[0];
+            const newState = { ...data };
+            Object.values(data)[0].push(submitted);
+
+            setData(newState);
+        })
         .catch((e) => {
-            setErrorStatus(e);            
+            setErrorStatus(e);
         });
-    }, []);
-    return {data, errorStatus};
+    }
+
+    return { request, appendData, data, errorStatus };
 }

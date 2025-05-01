@@ -18,14 +18,18 @@ export default function Customers() {
     const navigate = useNavigate();
 
     const url = baseUrl + 'api/customers';
-    const { data: {customers} = {}, errorStatus } = useFetch(url, {method: 'GET', 
+    const { request, appendData, data: {customers} = {}, errorStatus } = useFetch(url, {method: 'GET', 
     headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + localStorage.getItem('access')
     }},);
 
     useEffect(() => {
-        console.log(customers, errorStatus);
+        request();
+    }, []);
+
+    useEffect(() => {
+        fetch(url).then().then().catch()
     })
 
     // useEffect(() => {
@@ -54,34 +58,11 @@ export default function Customers() {
 
    
     function newCustomer(name, industry){
-    //     const data = {name: name, industry: industry};
-    //     const url = baseUrl + 'api/customers';
-    //     fetch(url, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             Authorization: 'Bearer ' + localStorage.getItem('access')
-    //         },
-    //         body: JSON.stringify(data)
-    //     }).then((response) => {
-    //         if(response.status === 401){ 
-    //             navigate('/login', {
-    //                 state: { 
-    //                     previousUrl: location.pathname 
-    //                 }
-    //             })
-    //         }
-    //         if(!response.ok) {
-    //             throw new Error('Something went wrong');
-    //         }
-    //         return response.json();
-    //     }).then((data) => {
-    //         //
-    //         toogleShow();
-    //         setCustomers([...customers, data.customer]);
-    //     }).catch((e) => {
-    //         console.log(e);
-    //     });
+         appendData({ name: name, industry: industry });
+
+         if(!errorStatus){
+            toogleShow();
+         }
     }
 
     return (
